@@ -115,6 +115,21 @@ def make_public_actor(actor):
             public_actor[argument] = actor[argument]
     return public_actor 
 
+# route pour supprimer une biere de ma bdd
+@app.route('/actors/<int:actor_id>', methods=['DELETE'])
+def delete_actor(actor_id):
+    actor = get_actor_by_id(actor_id)
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM actor WHERE actor_id=%s", (str(actor_id)))
+        mysql.connection.commit()
+        cur.close()
+        return actor
+    except Exception as e:
+        print(e)
+        return jsonify({'is':False})
+
+
 # annotation app.route('URL')
 @app.route('/', methods=['GET'])
 def index():
