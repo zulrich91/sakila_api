@@ -1,3 +1,4 @@
+# import des packages
 from typing import List
 from flask import Flask, request
 from flask import json
@@ -9,7 +10,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# configuration a la connection mysql
+# configuration de la connection mysql
 app.config['MYSQL_HOST'] = "localhost"
 app.config["MYSQL_USER"] = "root"
 app.config['MYSQL_PASSWORD'] = "Fr@16122018"
@@ -49,7 +50,7 @@ def get_actor_by_id(actor_id):
         print(f"Exception occured : {e}")
         abort(404)
 
-# route pour modifier un article precise de ma bdd
+# route pour modifier un acteur precise de ma bdd
 @app.route('/actors/<int:actor_id>', methods=['PUT'])
 def update_actor_by_id(actor_id):
     actor = get_actor_by_id(actor_id)
@@ -75,18 +76,17 @@ def update_actor_by_id(actor_id):
         return jsonify({'is':False})
 
 
-# route pour ajouter une biere dans ma bdd
+# route pour ajouter un acteur dans ma bdd
 @app.route('/actors', methods=['POST'])
 def create_actor():
     if not request.json and not "first_name" in request.json:
         abort(404)
     try:
-        # creer les champs de ma nouvelle biere
+        # creer les champs de mon nouveau actor
         first_name = request.json.get('first_name','')
         last_name = request.json.get("last_name","")
         # creer ma connection et envoyer a ma bdd
         cur = mysql.connection.cursor()
-        # get the max id in the db and insert a new value at max+1
         cur.execute("INSERT INTO actor(first_name, last_name, last_update) VALUES(%s,%s, %s)", (first_name, last_name, datetime.utcnow()))
         mysql.connection.commit()
         cur.close()
@@ -115,7 +115,7 @@ def make_public_actor(actor):
             public_actor[argument] = actor[argument]
     return public_actor 
 
-# route pour supprimer une biere de ma bdd
+# route pour supprimer un acteur de ma bdd
 @app.route('/actors/<int:actor_id>', methods=['DELETE'])
 def delete_actor(actor_id):
     actor = get_actor_by_id(actor_id)
